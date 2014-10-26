@@ -114,26 +114,26 @@ public class IntervalTree {
 		ArrayList<Interval> intersections = new ArrayList<Interval>();
 		if(node.minSplitValue==node.maxSplitValue) return intersections;  //base case
 		
-		if(q.contains(node.splitValue)){
-			if(node.leftIntervals!=null)intersections.addAll(node.leftIntervals);
+		if(q.contains(node.splitValue)){							// if the interval contains the split value add all intervals
+			if(node.leftIntervals!=null)intersections.addAll(node.leftIntervals); // and search both sub trees
 			intersections.addAll(findIntersectionsInTree(node.leftChild, q));
 			intersections.addAll(findIntersectionsInTree(node.rightChild, q));
 		}
-		else if(node.splitValue<q.leftEndPoint){
-			if(node.rightIntervals!=null) {
+		else if(node.splitValue<q.leftEndPoint){ 					// if the split value is less than the interval 
+			if(node.rightIntervals!=null) {							
 				for(int i = node.rightIntervals.size()-1;(i>=0 && node.rightIntervals.get(i).intersects(q));i--){
-					intersections.add(node.rightIntervals.get(i));
+					intersections.add(node.rightIntervals.get(i));	// add the intervals that intersect 
 				}
-			}
-			
+			}														// add  the intervals to the left
 			intersections.addAll(findIntersectionsInTree(node.rightChild, q));
 		}
-		else if(node.splitValue>q.rightEndPoint){
-			if(node.leftIntervals!=null){
+		
+		else if(node.splitValue>q.rightEndPoint){					// if the split value is more than the interval 
+			if(node.leftIntervals!=null){							
 				for(int i = 0;(i<node.leftIntervals.size() && node.leftIntervals.get(i).intersects(q));i++){
-					intersections.add(node.rightIntervals.get(i));
+					intersections.add(node.rightIntervals.get(i));	// add the intervals that intersect
 				}
-			}
+			}														// add the intervals to the right
 			intersections.addAll(findIntersectionsInTree(node.leftChild, q));
 			
 		}
