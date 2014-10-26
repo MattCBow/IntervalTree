@@ -92,22 +92,22 @@ public class IntervalTree {
 		mapToSide(root, rightSortedIntervals, 'r');		//Maps rightIntervals
 		
 	}
-	private void mapToSide(IntervalTreeNode root, ArrayList<Interval> intervals, char lr){
-		if(lr=='l')root.leftIntervals 	= new ArrayList<Interval>();
-		if(lr=='r')root.rightIntervals	= new ArrayList<Interval>();
+	private void mapToSide(IntervalTreeNode node, ArrayList<Interval> intervals, char lr){
+		if(lr=='l')node.leftIntervals 	= new ArrayList<Interval>();
+		if(lr=='r')node.rightIntervals	= new ArrayList<Interval>();
 		ArrayList<Interval> leftList 	= new ArrayList<Interval>();
 		ArrayList<Interval> rightList	= new ArrayList<Interval>();
 		
 		for(Interval i : intervals){		//Separates intervals for the root, left child, and right childe
-			if(i.contains(root.splitValue) ){
-				if(lr=='l')root.leftIntervals.add(i);
-				if(lr=='r')root.rightIntervals.add(i);
+			if(i.contains(node.splitValue) ){
+				if(lr=='l')node.leftIntervals.add(i);
+				if(lr=='r')node.rightIntervals.add(i);
 			}
-			if(i.rightEndPoint < root.splitValue)	leftList.add(i);
-			if(i.leftEndPoint > root.splitValue) 	rightList.add(i);
+			if(i.rightEndPoint < node.splitValue)	leftList.add(i);
+			if(i.leftEndPoint > node.splitValue) 	rightList.add(i);
 		}
-		if(!leftList.isEmpty())mapToSide(root.leftChild, leftList, lr);
-		if(!rightList.isEmpty())mapToSide(root.rightChild, rightList, lr);
+		if(!leftList.isEmpty())mapToSide(node.leftChild, leftList, lr); 	//recursive method call for left child
+		if(!rightList.isEmpty())mapToSide(node.rightChild, rightList, lr);	//recursive method call for right child
 	}
 	
 	/**
@@ -117,9 +117,19 @@ public class IntervalTree {
 	 * @return Array list of all intersecting intervals; size is 0 if there are no intersections
 	 */
 	public ArrayList<Interval> findIntersectingIntervals(Interval q) {
-		// COMPLETE THIS METHOD
-		// THE FOLLOWING LINE HAS BEEN ADDED TO MAKE THE PROGRAM COMPILE
-		return null;
+		return findIntersectionsInTree(q,root); //recursive helper method
+	}
+	private ArrayList<Interval> findIntersectionsInTree(Interval q, IntervalTreeNode node){
+		
+		ArrayList<Interval> intersections = new ArrayList<Interval>();	//Adds all intersections at node & children
+		for(Interval i : node.leftIntervals)if(q.intersects(i)) intersections.add(i);
+		
+		try								{intersections.addAll(findIntersectionsInTree(q,node.leftChild));}
+		catch(NullPointerException npe) {System.out.println("Null Pointer Exception Caught");}
+		try								{intersections.addAll(findIntersectionsInTree(q,node.rightChild));}
+		catch(NullPointerException npe) {System.out.println("Null Pointer Exception Caught");}
+		
+		return intersections;
 	}
 	
 	/**
