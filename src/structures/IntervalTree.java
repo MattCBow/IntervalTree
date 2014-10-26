@@ -127,7 +127,6 @@ public class IntervalTree {
 			}														// add  the intervals to the left
 			intersections.addAll(findIntersectionsInTree(node.rightChild, q));
 		}
-		
 		else if(node.splitValue>q.rightEndPoint){					// if the split value is more than the interval 
 			if(node.leftIntervals!=null){							
 				for(int i = 0;(i<node.leftIntervals.size() && node.leftIntervals.get(i).intersects(q));i++){
