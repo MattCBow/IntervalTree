@@ -45,10 +45,12 @@ public class IntervalTree {
 		
 		for(int i : sortedEndPoints)System.out.print(i+" ");
 		System.out.println();
-
+		
 		// build the tree nodes
 		root = buildTreeNodes(sortedEndPoints);
 		
+		System.out.println(root);
+
 		// map intervals to the tree nodes
 		mapIntervalsToTree(intervalsLeft, intervalsRight);
 	}
@@ -61,18 +63,21 @@ public class IntervalTree {
 	 */
 	public static IntervalTreeNode buildTreeNodes(ArrayList<Integer> endPoints) {
 		Queue<IntervalTreeNode> q = new Queue<IntervalTreeNode>();
-		for(Integer i:endPoints) q.enqueue(new IntervalTreeNode(i,i,i));
-		while(q.size()!=1){
-			int subTrees=q.size();
-			while(subTrees>1){
-				IntervalTreeNode T1= q.dequeue(), T2= q.dequeue();
-				IntervalTreeNode N = new IntervalTreeNode((T1.splitValue+T2.splitValue)/2,T1.minSplitValue, T2.maxSplitValue);
+		for(Integer i:endPoints) q.enqueue(new IntervalTreeNode(i,i,i));	//Create Tree for each end point
+		while(q.size()!=1){													//Make Trees Consisting of 
+			int subTrees=q.size();											
+			while(subTrees>1){												//do one iteration of q
+				IntervalTreeNode T1= q.dequeue(), T2= q.dequeue();	
+				IntervalTreeNode N = new IntervalTreeNode((T1.maxSplitValue+T2.minSplitValue)/2,T1.minSplitValue, T2.maxSplitValue);
 				N.leftChild=T1;
 				N.rightChild=T2;
-				q.enqueue(N);
+				q.enqueue(N);									//Add a new tree consisting of q nodes back into q
+				subTrees-=2;
 			}
+			if(subTrees==1)q.enqueue(q.dequeue());
 		}
-		return null;
+		
+		return q.dequeue();
 	}
 	
 	/**

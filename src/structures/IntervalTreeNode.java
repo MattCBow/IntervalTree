@@ -111,6 +111,8 @@ public class IntervalTreeNode {
 	 */
 	public String toString() {
 		return "(" + maxSplitValue + "," + splitValue + "," + minSplitValue + "," +
-		       leftIntervals + "," + rightIntervals + ")";
+		       leftIntervals + "," + rightIntervals + ")" +"\n"+leftChild+"\n"+rightChild;
+		
+		
 	}
 }
