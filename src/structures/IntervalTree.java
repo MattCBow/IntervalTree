@@ -107,18 +107,37 @@ public class IntervalTree {
 	 * @return Array list of all intersecting intervals; size is 0 if there are no intersections
 	 */
 	public ArrayList<Interval> findIntersectingIntervals(Interval q) {
-		return findIntersectionsInTree(q,root); //recursive helper method
+		return findIntersectionsInTree(root, q); //recursive helper method
 	}
-	private ArrayList<Interval> findIntersectionsInTree(Interval q, IntervalTreeNode node){
+	private ArrayList<Interval> findIntersectionsInTree(IntervalTreeNode node, Interval q){
 		
-		ArrayList<Interval> intersections = new ArrayList<Interval>();	//Adds all intersections at node
-		for(Interval i : node.leftIntervals)if(q.intersects(i)) intersections.add(i);
+		ArrayList<Interval> intersections = new ArrayList<Interval>();
+		if(node.minSplitValue==node.maxSplitValue) return intersections;  //base case
 		
-		try	{intersections.addAll(findIntersectionsInTree(q,node.leftChild));} 	//Adds all the intersections on the left
-		catch(NullPointerException npe) {}										//and catches it if there are none
-		try	{intersections.addAll(findIntersectionsInTree(q,node.rightChild));}
-		catch(NullPointerException npe) {}
-		
+		if(q.contains(node.splitValue)){
+			if(node.leftIntervals!=null)intersections.addAll(node.leftIntervals);
+			intersections.addAll(findIntersectionsInTree(node.leftChild, q));
+			intersections.addAll(findIntersectionsInTree(node.rightChild, q));
+		}
+		else if(node.splitValue<q.leftEndPoint){
+			if(node.rightIntervals!=null) {
+				for(int i = node.rightIntervals.size()-1;(i>=0 && node.rightIntervals.get(i).intersects(q));i--){
+					intersections.add(node.rightIntervals.get(i));
+				}
+			}
+			
+			intersections.addAll(findIntersectionsInTree(node.rightChild, q));
+		}
+		else if(node.splitValue>q.rightEndPoint){
+			if(node.leftIntervals!=null){
+				for(int i = 0;(i<node.leftIntervals.size() && node.leftIntervals.get(i).intersects(q));i++){
+					intersections.add(node.rightIntervals.get(i));
+				}
+			}
+			intersections.addAll(findIntersectionsInTree(node.leftChild, q));
+			
+		}
+			
 		return intersections;
 	}
 	
