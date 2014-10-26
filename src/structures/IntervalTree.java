@@ -34,17 +34,9 @@ public class IntervalTree {
 		// sort intervals on left and right end points
 		Sorter.sortIntervals(intervalsLeft, 'l');
 		Sorter.sortIntervals(intervalsRight,'r');
-		
-		for(Interval i: intervalsLeft)System.out.print(i+" ");
-		System.out.println();
-		for(Interval i: intervalsRight)System.out.print(i+" ");
-		System.out.println();
 
 		// get sorted list of end points without duplicates
 		ArrayList<Integer> sortedEndPoints = Sorter.getSortedEndPoints(intervalsLeft, intervalsRight);
-		
-		for(int i : sortedEndPoints)System.out.print(i+" ");
-		System.out.println();
 		
 		// build the tree nodes
 		root = buildTreeNodes(sortedEndPoints);
@@ -52,8 +44,6 @@ public class IntervalTree {
 		// map intervals to the tree nodes
 		mapIntervalsToTree(intervalsLeft, intervalsRight);
 		
-		System.out.println(root);
-
 	}
 	
 	/**
@@ -121,13 +111,13 @@ public class IntervalTree {
 	}
 	private ArrayList<Interval> findIntersectionsInTree(Interval q, IntervalTreeNode node){
 		
-		ArrayList<Interval> intersections = new ArrayList<Interval>();	//Adds all intersections at node & children
+		ArrayList<Interval> intersections = new ArrayList<Interval>();	//Adds all intersections at node
 		for(Interval i : node.leftIntervals)if(q.intersects(i)) intersections.add(i);
 		
-		try								{intersections.addAll(findIntersectionsInTree(q,node.leftChild));}
-		catch(NullPointerException npe) {System.out.println("Null Pointer Exception Caught");}
-		try								{intersections.addAll(findIntersectionsInTree(q,node.rightChild));}
-		catch(NullPointerException npe) {System.out.println("Null Pointer Exception Caught");}
+		try	{intersections.addAll(findIntersectionsInTree(q,node.leftChild));} 	//Adds all the intersections on the left
+		catch(NullPointerException npe) {}										//and catches it if there are none
+		try	{intersections.addAll(findIntersectionsInTree(q,node.rightChild));}
+		catch(NullPointerException npe) {}
 		
 		return intersections;
 	}
