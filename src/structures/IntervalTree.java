@@ -35,9 +35,17 @@ public class IntervalTree {
 		Sorter.sortIntervals(intervalsLeft, 'l');
 		Sorter.sortIntervals(intervalsRight,'r');
 		
+		for(Interval i: intervalsLeft)System.out.print(i+" ");
+		System.out.println();
+		for(Interval i: intervalsRight)System.out.print(i+" ");
+		System.out.println();
+
 		// get sorted list of end points without duplicates
 		ArrayList<Integer> sortedEndPoints = Sorter.getSortedEndPoints(intervalsLeft, intervalsRight);
 		
+		for(int i : sortedEndPoints)System.out.print(i+" ");
+		System.out.println();
+
 		// build the tree nodes
 		root = buildTreeNodes(sortedEndPoints);
 		
@@ -52,8 +60,18 @@ public class IntervalTree {
 	 * @return Root of the tree structure
 	 */
 	public static IntervalTreeNode buildTreeNodes(ArrayList<Integer> endPoints) {
-		// COMPLETE THIS METHOD
-		// THE FOLLOWING LINE HAS BEEN ADDED TO MAKE THE PROGRAM COMPILE
+		Queue<IntervalTreeNode> q = new Queue<IntervalTreeNode>();
+		for(Integer i:endPoints) q.enqueue(new IntervalTreeNode(i,i,i));
+		while(q.size()!=1){
+			int subTrees=q.size();
+			while(subTrees>1){
+				IntervalTreeNode T1= q.dequeue(), T2= q.dequeue();
+				IntervalTreeNode N = new IntervalTreeNode((T1.splitValue+T2.splitValue)/2,T1.minSplitValue, T2.maxSplitValue);
+				N.leftChild=T1;
+				N.rightChild=T2;
+				q.enqueue(N);
+			}
+		}
 		return null;
 	}
 	

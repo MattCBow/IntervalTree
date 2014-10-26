@@ -21,7 +21,14 @@ public class Sorter {
 	 * @param lr If 'l', then sort is on left endpoints; if 'r', sort is on right endpoints
 	 */
 	public static void sortIntervals(ArrayList<Interval> intervals, char lr) {
-		// COMPLETE THIS METHOD
+		for(int a=0;a<intervals.size();a++){			//Make an iteration for every element in the array
+			int i = 0;
+			for(int b=1;b<(intervals.size()-a);b++){ 	//Make an iteration of the elements that haven't been moved
+				if(lr=='l' && intervals.get(b).leftEndPoint < intervals.get(i).leftEndPoint )i=b;
+				if(lr=='r' && intervals.get(b).rightEndPoint < intervals.get(i).rightEndPoint )i=b;
+			}
+			intervals.add(intervals.remove(i));			//Find the smallest end point and add it to the back of the array
+		}
 	}
 	
 	/**
@@ -33,8 +40,36 @@ public class Sorter {
 	 * @return Sorted array list of all endpoints without duplicates
 	 */
 	public static ArrayList<Integer> getSortedEndPoints(ArrayList<Interval> leftSortedIntervals, ArrayList<Interval> rightSortedIntervals) {
-		// COMPLETE THIS METHOD
-		// THE FOLLOWING LINE HAS BEEN ADDED TO MAKE THE PROGRAM COMPILE
-		return null;
+		ArrayList<Integer> ret = new ArrayList<Integer>();
+		int size = rightSortedIntervals.size();
+		boolean changes;
+		do{
+			changes = false;
+			int endPoint = rightSortedIntervals.get(size-1).rightEndPoint;
+			for(int c = 0;c<leftSortedIntervals.size();c++){
+				int[] endpoints = {leftSortedIntervals.get(c).leftEndPoint,
+						leftSortedIntervals.get(c).rightEndPoint,
+						rightSortedIntervals.get(c).leftEndPoint,
+						rightSortedIntervals.get(c).rightEndPoint};
+				for(int temp:endpoints)if((ret.isEmpty() || temp > ret.get(ret.size()-1)) && temp<endPoint) endPoint=temp;		
+			}	//Find the next smallest end point in the interval and add it to the return statement
+			if(ret.isEmpty() || endPoint > ret.get(ret.size()-1)){ //If the next smallest is greater than the most recent endPoint add it
+				ret.add(endPoint);
+				changes=true;
+			}
+		}while(changes); //keep adding the next smallest endPoint until it iterates and can't find one
+		return ret;
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
