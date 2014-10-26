@@ -49,10 +49,11 @@ public class IntervalTree {
 		// build the tree nodes
 		root = buildTreeNodes(sortedEndPoints);
 		
-		System.out.println(root);
-
 		// map intervals to the tree nodes
 		mapIntervalsToTree(intervalsLeft, intervalsRight);
+		
+		System.out.println(root);
+
 	}
 	
 	/**
@@ -87,7 +88,26 @@ public class IntervalTree {
 	 * @param rightSortedIntervals Array list of intervals sorted according to right endpoints
 	 */
 	public void mapIntervalsToTree(ArrayList<Interval> leftSortedIntervals, ArrayList<Interval> rightSortedIntervals) {
-		// COMPLETE THIS METHOD
+		mapToSide(root, leftSortedIntervals, 'l');		//Maps leftIntervals
+		mapToSide(root, rightSortedIntervals, 'r');		//Maps rightIntervals
+		
+	}
+	private void mapToSide(IntervalTreeNode root, ArrayList<Interval> intervals, char lr){
+		if(lr=='l')root.leftIntervals 	= new ArrayList<Interval>();
+		if(lr=='r')root.rightIntervals	= new ArrayList<Interval>();
+		ArrayList<Interval> leftList 	= new ArrayList<Interval>();
+		ArrayList<Interval> rightList	= new ArrayList<Interval>();
+		
+		for(Interval i : intervals){		//Separates intervals for the root, left child, and right childe
+			if(i.contains(root.splitValue) ){
+				if(lr=='l')root.leftIntervals.add(i);
+				if(lr=='r')root.rightIntervals.add(i);
+			}
+			if(i.rightEndPoint < root.splitValue)	leftList.add(i);
+			if(i.leftEndPoint > root.splitValue) 	rightList.add(i);
+		}
+		if(!leftList.isEmpty())mapToSide(root.leftChild, leftList, lr);
+		if(!rightList.isEmpty())mapToSide(root.rightChild, rightList, lr);
 	}
 	
 	/**
